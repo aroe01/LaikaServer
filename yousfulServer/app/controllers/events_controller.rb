@@ -4,13 +4,22 @@ class EventsController < ApplicationController
   	puts "Creating"
   	#puts events_params
   	#puts Rack::Utils.parse_nested_query(params)
-  	#puts JSON.parse(params[:event])
-  	
+  	#puts JSON.parse(params)
+#    puts params
+  	plain = JSON.parse(Base64.decode64(params[:event]))
+    puts plain
   	@event = Event.new
-  	@event.lat = params[:latitude]
-  	@event.long = params[:longitude]
+
+    @event.name = plain["Title"]
+  	@event.lat = plain["Latitude"]
+  	@event.long = plain["Longitude"]
     @event.heat = 0
     @event.photo_urls = "[]"
+    @event.locationName = plain["LocationName"]
+    @event.startTime = plain["StartTimestamp"]
+    @event.description = plain["Description"]
+    @event.vibe = plain["Vibe"]
+    @event.activity = plain["Activity"]
   	if @event.save
   		render json: @event  	
    	else
